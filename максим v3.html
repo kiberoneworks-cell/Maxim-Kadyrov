@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Максим & Слава — LEGO Ghost Rider: Семейный дуэт</title>
+  <!-- Google Fonts & Font Awesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #0a0408;
+      font-family: 'Inter', sans-serif;
+      color: #f5ede6;
+      line-height: 1.4;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* ========= ФОН В СТИЛЕ GHOST RIDER + КИРПИЧНАЯ ТЕКСТУРА ========= */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        repeating-linear-gradient(45deg, rgba(255, 80, 40, 0.08) 0px, rgba(255, 80, 40, 0.08) 2px, transparent 2px, transparent 8px),
+        repeating-linear-gradient(135deg, rgba(220, 60, 20, 0.05) 0px, rgba(220, 60, 20, 0.05) 1px, transparent 1px, transparent 12px);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Лего-кирпичики на фоне (плавающие блоки) */
+    .brick-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .brick-overlay i {
+      position: absolute;
+      opacity: 0.1;
+      font-size: 2.8rem;
+      color: #ff7b2c;
+      filter: drop-shadow(0 0 3px #ff3c00);
+    }
+
+    /* основной контейнер */
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* общие стили для карточек и кирпичного хардкора */
+    h1, h2, h3 {
+      font-family: 'Bangers', cursive;
+      letter-spacing: 2px;
+      font-weight: 400;
+    }
+
+    h1 {
+      font-size: 3.8rem;
+      background: linear-gradient(135deg, #ffe6b0, #ff9f4a, #f03e1f);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      text-shadow: 0 0 12px rgba(255, 60, 0, 0.6);
+      margin-bottom: 0.5rem;
+    }
+
+    .flame-icon {
+      filter: drop-shadow(0 0 6px #ff5e00);
+    }
+
+    /* заголовок и описание */
+    .hero {
+      text-align: center;
+      margin-bottom: 3.5rem;
+      position: relative;
+    }
+
+    .hero p {
+      font-size: 1.3rem;
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(3px);
+      display: inline-block;
+      padding: 0.5rem 1.8rem;
+      border-radius: 60px;
+      border-left: 5px solid #ff6a2e;
+      border-right: 5px solid #ffaa33;
+      font-weight: 600;
+    }
+
+    /* кирпичный разделитель с цепями */
+    .chain-divider {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      font-size: 1.8rem;
+      margin: 2rem 0 1.5rem;
+      color: #f15a24;
+      text-shadow: 0 0 3px #ff2c00;
+    }
+
+    /* сетка карточек */
+    .duo-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      margin: 2rem 0 3rem;
+    }
+
+    /* карточка в стиле LEGO + GHOST RIDER (кирпичная рама, шипы, пламя) */
+    .card {
+      flex: 1;
+      min-width: 280px;
+      max-width: 550px;
+      background: rgba(10, 6, 15, 0.75);
+      backdrop-filter: blur(8px);
+      border-radius: 32px;
+      border: 1px solid rgba(255, 100, 30, 0.5);
+      box-shadow: 0 25px 40px -12px rgba(0, 0, 0, 0.6), 0 0 0 2px #2b1508 inset, 0 0 0 4px rgba(255, 90, 0, 0.3) inset;
+      transition: transform 0.25s ease, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 30px 45px -12px black, 0 0 0 2px #ff7a2f inset, 0 0 0 5px rgba(255, 90, 0, 0.5) inset;
+    }
+
+    /* лего-шишечки (студики) */
+    .card::before, .card::after {
+      content: "";
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      background: radial-gradient(circle at 30% 35%, #ffb347, #d43f00);
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.4), inset 0 -2px 0 rgba(0,0,0,0.2);
+      z-index: 3;
+      opacity: 0.9;
+    }
+
+    .card::before {
+      top: -12px;
+      left: 20px;
+    }
+
+    .card::after {
+      bottom: -12px;
+      right: 20px;
+      background: radial-gradient(circle at 30% 35%, #ff884d, #b23200);
+    }
+
+    /* пламенные уголки */
+    .card .flame-corner {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(circle, #ff5e1a, transparent 70%);
+      opacity: 0.45;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* внутреннее содержимое */
+    .card-content {
+      padding: 2rem 1.8rem 2.2rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .character-icon {
+      font-size: 4rem;
+      background: linear-gradient(145deg, #2e1a0c, #100703);
+      width: 90px;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 30px;
+      margin-bottom: 1.4rem;
+      border: 2px solid #ff884d;
+      box-shadow: 0 8px 0 #5a2500;
+      transform: rotate(2deg);
+      transition: 0.2s;
+    }
+
+    .card:hover .character-icon {
+      transform: rotate(0deg) scale(1.02);
+      border-color: #ffbb77;
+      box-shadow: 0 6px 0 #722d00;
+    }
+
+    .card h2 {
+      font-size: 2.3rem;
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, #ffcf9a, #ff8733);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 0.9rem;
+      display: inline-block;
+      border-bottom: 3px dashed #ff6a2e;
+    }
+
+    .info-line {
+      font-size: 1.1rem;
+      margin: 0.9rem 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: rgba(0,0,0,0.4);
+      padding: 0.6rem 1rem;
+      border-radius: 40px;
+      border-left: 4px solid #f55b1a;
+    }
+
+    .info-line i {
+      width: 30px;
+      font-size: 1.5rem;
+      color: #ff884d;
+    }
+
+    .superpower-badge {
+      background: linear-gradient(95deg, #241007, #3f1c0a);
+      border-radius: 28px;
+      padding: 0.6rem 1.2rem;
+      margin-top: 1.2rem;
+      border: 1px solid #ff914d;
+      box-shadow: 0 0 10px rgba(255, 70, 0, 0.4);
+      font-weight: 700;
+    }
+
+    .dream-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #ffcf8a;
+    }
+
+    .small-note {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      opacity: 0.85;
+      border-top: 1px dashed #ff7733;
+      padding-top: 1rem;
+    }
+
+    /* специальный блок огненной цепи */
+    .team-quote {
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(8px);
+      border-radius: 60px;
+      padding: 1.8rem 2rem;
+      margin: 2.5rem 0 1rem;
+      text-align: center;
+      border: 1px solid #ff7940;
+      box-shadow: 0 0 20px rgba(255, 80, 0, 0.3);
+      position: relative;
+    }
+
+    .team-quote i {
+      font-size: 2rem;
+      margin: 0 10px;
+      color: #ff7640;
+    }
+
+    .team-quote p {
+      font-size: 1.2rem;
+      font-weight: 600;
+    }
+
+    /* лего-цепь подвал */
+    footer {
+      text-align: center;
+      margin-top: 4rem;
+      font-size: 0.8rem;
+      opacity: 0.7;
+      border-top: 2px dotted #ff6a2e;
+      padding-top: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* адаптивность */
+    @media (max-width: 800px) {
+      .container {
+        padding: 1rem 1rem 3rem;
+      }
+      h1 {
+        font-size: 2.6rem;
+      }
+      .hero p {
+        font-size: 1rem;
+      }
+      .card-content {
+        padding: 1.4rem 1.2rem;
+      }
+      .character-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 3rem;
+      }
+      .card h2 {
+        font-size: 1.8rem;
+      }
+    }
+
+    /* анимированное свечение */
+    @keyframes flameFlicker {
+      0% { text-shadow: 0 0 2px #ff3c00; }
+      100% { text-shadow: 0 0 12px #ff9f2e; }
+    }
+    .glow-text {
+      animation: flameFlicker 1.2s infinite alternate;
+    }
+
+    /* доп. элемент - мотоциклетная цепь в декоре */
+    .chain-decoration {
+      background: repeating-linear-gradient(90deg, #dc6a2e, #dc6a2e 12px, #ffa047 12px, #ffa047 24px);
+      height: 4px;
+      width: 100px;
+      margin: 10px auto;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="brick-overlay">
+  <i class="fas fa-cube" style="top: 15%; left: 3%; transform: rotate(15deg);"></i>
+  <i class="fas fa-fire" style="bottom: 12%; right: 5%; font-size: 3.5rem; opacity: 0.15;"></i>
+  <i class="fas fa-skull" style="top: 70%; left: 85%; opacity: 0.08; font-size: 4rem;"></i>
+  <i class="fas fa-gripfire" style="top: 40%; left: 90%; opacity: 0.12;"></i>
+  <i class="fas fa-border-all" style="bottom: 20%; left: 7%; opacity: 0.1; font-size: 3rem;"></i>
+</div>
+
+<div class="container">
+  <div class="hero">
+    <h1><i class="fas fa-fire flame-icon"></i> LEGO GHOST RIDER <i class="fas fa-crown"></i></h1>
+    <p><i class="fas fa-motorcycle"></i> Огонь, кубики и суперспособность без скандалов <i class="fas fa-cube"></i></p>
+    <div class="chain-divider">
+      <i class="fas fa-link"></i> <i class="fas fa-chain-broken"></i> <i class="fas fa-fire"></i> <i class="fas fa-brick"></i>
+    </div>
+  </div>
+
+  <div class="duo-grid">
+    <!-- КАРТОЧКА РЕБЁНКА: МАКСИМ -->
+    <div class="card">
+      <div class="flame-corner" style="top:0; left:0;"></div>
+      <div class="flame-corner" style="bottom:0; right:0;"></div>
+      <div class="card-content">
+        <div class="character-icon">
+          <i class="fas fa-child"></i><i class="fas fa-gamepad" style="font-size: 2rem; margin-left: -10px;"></i>
+        </div>
+        <h2>МАКСИМ <span style="font-size: 1.2rem;">⚡ 11 лет</span></h2>
+        <div class="info-line">
+          <i class="fas fa-dream"></i>
+          <span class="dream-text">🌟 Мечта: Стать разработчиком хорошей игры</span>
+        </div>
+        <div class="info-line">
+          <i class="fas fa-code"></i>
+          <span>🔥 Учится Unity, C# и строит пиксельные миры</span>
+        </div>
+        <div class="info-line">
+          <i class="fas fa-cubes"></i>
+          <span>🧩 LEGO-инженер: собирает собственные игровые уровни</span>
+        </div>
+        <div class="small-note">
+          <i class="fas fa-quote-left"></i> «Я создам игру, где каждый почувствует себя героем! А папа помогает не бояться ошибок»
+        </div>
+      </div>
+    </div>
+
+    <!-- КАРТОЧКА РОДИТЕЛЯ: СЛАВА (суперспособность) -->
+    <div class="card">
+      <div class="flame-corner" style="top:0; right:0;"></div>
+      <div class="flame-corner" style="bottom:0; left:0;"></div>
+      <div class="card-content">
+        <div class="character-icon">
+          <i class="fas fa-user-astronaut"></i><i class="fas fa-shield-alt" style="font-size: 2rem; margin-left: -8px;"></i>
+        </div>
+        <h2>СЛАВА <i class="fas fa-bolt" style="font-size: 1.5rem;"></i></h2>
+        <div class="superpower-badge">
+          <i class="fas fa-star-of-life" style="margin-right: 10px;"></i>
+          <strong>СУПЕРСПОСОБНОСТЬ:</strong> Мало ворчит и НЕ РУГАЕТ за тройки в школе 🛡️
+        </div>
+        <div class="info-line">
+          <i class="fas fa-face-smile"></i>
+          <span>✨ Терпимость к оценкам «3» — абсолютная</span>
+        </div>
+        <div class="info-line">
+          <i class="fas fa-comment-dots"></i>
+          <span>🧠 Вместо скандалов — поддержка: «Тройка — не конец света, твой код важнее»</span>
+        </div>
+        <div class="info-line">
+          <i class="fas fa-hand-fist"></i>
+          <span>⚙️ Помогает Максиму фокуситься на разработке игр без страха</span>
+        </div>
+        <div class="small-note">
+          <i class="fas fa-chains"></i> Благодаря суперсиле Славы, в доме царит конструктивный хаос LEGO и море вдохновения 🔥
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Цитата / связь родитель-ребёнок в стиле призрачного гонщика -->
+  <div class="team-quote">
+    <i class="fas fa-skull"></i> <i class="fas fa-motorcycle"></i> <i class="fas fa-cube"></i>
+    <p>«С папиной суперспособностью <strong class="glow-text">"не ругать за тройки"</strong> и моей мечтой — мы создадим самую крутую игру!<br> 
+    Вместе мы команда, где даже пламя Лего-Госта светит ярко» — <strong>Максим & Слава</strong></p>
+    <div class="chain-decoration"></div>
+    <div style="margin-top: 10px; font-size: 0.85rem;">
+      <i class="fas fa-trophy"></i> Семейный дуэт без лишнего ворчания, только творчество, кубики и высокие цели
+    </div>
+  </div>
+
+  <!-- Дополнительная секция с фактами в стиле Ghost Rider Lego -->
+  <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: space-between; margin: 2rem 0 0;">
+    <div style="background: #1e0b03aa; border-radius: 24px; padding: 1rem 1.3rem; flex:1; border-left: 6px solid #ff7b2c;">
+      <i class="fas fa-brain"></i> <strong>Максим сегодня:</strong> Собирает концепт «Lego Ghost Rider: Погоня в Огненном Городе», учит скрипты на C#. Мечтает выпустить свою игру в Steam.
+    </div>
+    <div style="background: #1e0b03aa; border-radius: 24px; padding: 1rem 1.3rem; flex:1; border-right: 6px solid #ff7b2c;">
+      <i class="fas fa-heart"></i> <strong>Слава помогает:</strong> Покупает конструкторы, хвалит за прогресс даже при тройках, вместе тестируют игровые демки. «Ошибки — это топливо для итераций».
+    </div>
+  </div>
+
+  <footer>
+    <span><i class="fas fa-copyright"></i> Огонь в кубиках — LEGO Ghost Rider стиль</span>
+    <span><i class="fas fa-chalkboard-user"></i> Максим 11 лет → будущий геймдев</span>
+    <span><i class="fas fa-dragon"></i> Слава: суперспокойный родитель</span>
+  </footer>
+</div>
+
+<!-- Небольшой скрипт для динамического добавления искр (чисто атмосферно) -->
+<script>
+  (function() {
+    // легкий эффект "искры" при наведении на карточки в стиле призрачного мотоцикла
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const spark = document.createElement('div');
+        spark.style.position = 'absolute';
+        spark.style.left = x + 'px';
+        spark.style.top = y + 'px';
+        spark.style.width = '8px';
+        spark.style.height = '8px';
+        spark.style.background = '#ffaa55';
+        spark.style.borderRadius = '50%';
+        spark.style.filter = 'blur(2px)';
+        spark.style.boxShadow = '0 0 12px #ff5e00';
+        spark.style.pointerEvents = 'none';
+        spark.style.zIndex = '999';
+        spark.style.opacity = '0.8';
+        card.style.position = 'relative';
+        card.appendChild(spark);
+        setTimeout(() => { spark.remove(); }, 300);
+      });
+    });
+    // добавим маленький элемент "цепь" на логотип
+    console.log("🔥 LEGO GHOST RIDER: Семейная суперсила активирована!");
+  })();
+</script>
+</body>
+</html>
