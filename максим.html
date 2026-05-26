@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CYBER:KIN — Максим & Слава</title>
+    <style>
+        /* ========= RESET & GLOBAL CYBERPUNK STYLE ========= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #010511;
+            font-family: 'Share Tech Mono', 'Courier New', monospace;
+            color: #ccf4ff;
+            line-height: 1.5;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* glitchy scanlines + grid background */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 255, 255, 0.02) 0px,
+                rgba(0, 255, 255, 0.02) 2px,
+                transparent 2px,
+                transparent 6px
+            );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 10%, rgba(0, 20, 30, 0.4) 0%, #000000 90%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* основной контент поверх фона */
+        .cyber-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 2rem 3rem;
+        }
+
+        /* типографика с неоном */
+        h1, h2, h3, .neon-text {
+            font-family: 'Orbitron', 'Share Tech Mono', monospace;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            font-size: 3.2rem;
+            background: linear-gradient(135deg, #0ff, #f0f, #ff44cc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 8px rgba(0, 255, 255, 0.7);
+            margin-bottom: 0.25rem;
+            display: inline-block;
+            animation: glitchPulse 3s infinite;
+        }
+
+        @keyframes glitchPulse {
+            0% { text-shadow: -2px 0 #ff00c1, 2px 0 #00fff9; opacity: 1; }
+            50% { text-shadow: 2px 0 #ff00c1, -2px 0 #00fff9; opacity: 0.95; }
+            100% { text-shadow: -2px 0 #ff00c1, 2px 0 #00fff9; opacity: 1; }
+        }
+
+        .glitch-sub {
+            font-size: 1rem;
+            color: #6effe0;
+            border-left: 3px solid #0ff;
+            padding-left: 1rem;
+            margin: 0.5rem 0 2rem;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+
+        /* Сетка для карточек (кибер-дуэт) */
+        .duo-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 3rem 0 2rem;
+        }
+
+        /* универсальные карточки в стиле нейросети */
+        .cyber-card {
+            background: rgba(6, 12, 24, 0.75);
+            backdrop-filter: blur(2px);
+            border: 1.5px solid rgba(0, 255, 255, 0.35);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.2), inset 0 0 12px rgba(0, 255, 255, 0.05);
+            padding: 1.8rem;
+            transition: all 0.25s ease-in-out;
+            position: relative;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 95%, 97% 100%, 0% 100%);
+        }
+
+        .cyber-card:hover {
+            border-color: #ff44dd;
+            box-shadow: 0 0 28px rgba(255, 68, 221, 0.5), inset 0 0 8px #ff44dd66;
+            transform: translateY(-6px);
+        }
+
+        /* декоративные угловые элементы (без эмблем) */
+        .cyber-card::before {
+            content: "";
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 30px;
+            height: 2px;
+            background: #0ff;
+            box-shadow: 0 0 6px cyan;
+        }
+
+        .cyber-card::after {
+            content: "";
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            width: 30px;
+            height: 2px;
+            background: #f0f;
+            box-shadow: 0 0 6px #ff44dd;
+        }
+
+        /* заголовки внутри карточек */
+        .card-header {
+            display: flex;
+            align-items: baseline;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            border-bottom: 2px dashed #0ff;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header h2 {
+            font-size: 2rem;
+            color: #0ff;
+            text-shadow: 0 0 5px cyan;
+            letter-spacing: 1px;
+        }
+
+        .tag {
+            font-size: 0.75rem;
+            background: #0a1322;
+            border: 1px solid #0ff;
+            padding: 0.2rem 0.7rem;
+            font-family: monospace;
+            color: #6effe0;
+        }
+
+        /* стили для данных */
+        .data-row {
+            margin: 1rem 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            border-left: 3px solid #ff44dd;
+            padding-left: 1rem;
+        }
+        .data-label {
+            font-weight: bold;
+            color: #ff99ee;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1.5px;
+        }
+        .data-value {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-weight: 600;
+            color: #bbf5ff;
+            font-size: 1.2rem;
+            word-break: break-word;
+        }
+
+        .ability-chip {
+            background: linear-gradient(95deg, #0a1022, #001a2a);
+            padding: 0.75rem;
+            margin-top: 1.3rem;
+            border: 1px solid #f0f;
+            box-shadow: inset 0 0 8px rgba(255, 0, 255, 0.2);
+            font-size: 0.9rem;
+        }
+
+        .progress-sim {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0.5rem 0;
+        }
+        .bar-bg {
+            background: #1e2a3a;
+            height: 8px;
+            flex: 1;
+            border-radius: 0px;
+            overflow: hidden;
+        }
+        .bar-fill {
+            width: 88%;
+            height: 100%;
+            background: linear-gradient(90deg, #0ff, #f0f);
+            box-shadow: 0 0 4px cyan;
+        }
+        .bar-fill.low-grumble {
+            width: 12%;
+            background: #0ff;
+        }
+        .stat-num {
+            font-family: monospace;
+            font-weight: bold;
+            color: #f0f;
+        }
+
+        /* терминальная секция стилей */
+        .dream-code {
+            background: #010a12;
+            padding: 0.8rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            margin: 1.2rem 0;
+            border-left: 4px solid #0ff;
+            color: #9efff0;
+        }
+
+        /* дополнительный блок-связка */
+        .neon-divider {
+            text-align: center;
+            margin: 2rem 0 1rem;
+            font-size: 0.8rem;
+            letter-spacing: 4px;
+            color: #ff44cc55;
+        }
+
+        .footer-stats {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #0ff33f55;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+            font-family: monospace;
+        }
+
+        button {
+            background: none;
+            border: none;
+            color: #0ff;
+        }
+
+        /* адаптивность */
+        @media (max-width: 880px) {
+            .duo-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            .cyber-container {
+                padding: 1rem;
+            }
+            h1 {
+                font-size: 2.2rem;
+            }
+            .data-value {
+                font-size: 1rem;
+            }
+        }
+
+        /* анимация сканера */
+        @keyframes scanMove {
+            0% { background-position: 0% 0%;}
+            100% { background-position: 0% 200%;}
+        }
+
+        /* эффект наведения для мечты */
+        .dream-code:hover {
+            background: #021a22;
+            text-shadow: 0 0 3px cyan;
+        }
+
+        /* кастомная кнопка-статус (не эмблема) */
+        .sys-badge {
+            display: inline-block;
+            background: #0b1424;
+            padding: 0.2rem 0.7rem;
+            font-size: 0.65rem;
+            font-family: monospace;
+            color: #0ff;
+            border: 0.5px solid #0ff;
+        }
+
+        /* убираем любые графические эмблемы, только линии/текст */
+        .no-emblems {
+            user-select: none;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Fira+Code:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+<div class="cyber-container">
+    <!-- заголовок с глитч-эффектом без логотипов -->
+    <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap;">
+        <div>
+            <h1>◈ CYBER:KINSHIP ◈</h1>
+            <div class="glitch-sub">[ СЕМЕЙНЫЙ ПРОТОКОЛ v.2.0 ] //  ДОСЬЕ ГЕНЕРАЦИИ NEXT</div>
+        </div>
+        <div class="sys-badge">⚡ НЕЙРОСВЯЗЬ АКТИВНА ⚡</div>
+    </div>
+
+    <!-- основная сетка: ребёнок + родитель -->
+    <div class="duo-grid">
+        
+        <!-- КАРТОЧКА РЕБЁНКА: МАКСИМ -->
+        <div class="cyber-card">
+            <div class="card-header">
+                <h2>［МАКСИМ］</h2>
+                <div class="tag">#ЮНЫЙ_ДЕВ</div>
+            </div>
+            <div class="data-row">
+                <span class="data-label">▶ ВОЗРАСТ</span>
+                <span class="data-value">11 циклов</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">▶ ИДЕНТИФИКАТОР</span>
+                <span class="data-value">MAX_11_DEV</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">▶ ПРИЗВАНИЕ</span>
+                <span class="data-value">Гейм-дизайнер / Код-воин</span>
+            </div>
+            <div class="dream-code">
+                <span style="color:#ff66cc;">>_ мечта.exe</span> → [ СТАТЬ РАЗРАБОТЧИКОМ ХОРОШЕЙ ИГРЫ ]<br>
+                <span style="color:#0ff;">// создавать миры, которые вдохновляют и объединяют</span>
+                <div class="progress-sim" style="margin-top: 10px;">
+                    <span class="stat-num">[SKILL:PROGRESS]</span>
+                    <div class="bar-bg"><div class="bar-fill" style="width: 67%;"></div></div>
+                    <span>67%</span>
+                </div>
+            </div>
+            <div class="ability-chip">
+                <span style="color:#ff44ee;">⚡ ПАССИВНЫЙ БОНУС:</span> "Гиперфокус на геймдеве"<br>
+                <span style="font-size:0.7rem;">▸ учит C# ▸ рисует концепты ▸ мечтает о своей студии</span>
+                <div style="margin-top: 10px; border-top: 0.5px dashed cyan; padding-top: 8px;">
+                    <span class="data-label">▶ ЦИТАТА:</span> <span style="color:#bbf5ff;">«Моя игра изменит правила»</span>
+                </div>
+            </div>
+            <!-- индикация кибер-портфолио -->
+            <div style="margin-top: 1rem; font-size:0.7rem; text-align:right; opacity:0.7;">
+                [ статус: КОДИНГ АКТИВЕН ]
+            </div>
+        </div>
+        
+        <!-- КАРТОЧКА РОДИТЕЛЯ: СЛАВА -->
+        <div class="cyber-card">
+            <div class="card-header">
+                <h2>［СЛАВА］</h2>
+                <div class="tag">#СУПЕР_СПОСОБНОСТЬ</div>
+            </div>
+            <div class="data-row">
+                <span class="data-label">▶ РОЛЬ</span>
+                <span class="data-value">Главный архитектор спокойствия</span>
+            </div>
+            <div class="data-row">
+                <span class="data-label">▶ СУПЕРСПОСОБНОСТЬ</span>
+                <span class="data-value" style="font-size:1rem;">🌀 МАЛО ВОРЧИТ + НЕ РУГАЕТ ЗА ТРОЙКИ 🌀</span>
+            </div>
+            <!-- визуализация суперсилы (метрики киберспокойствия) -->
+            <div class="ability-chip" style="margin-top: 0.5rem;">
+                <div class="progress-sim">
+                    <span class="data-label">УРОВЕНЬ ВОРЧАНИЯ:</span>
+                    <div class="bar-bg"><div class="bar-fill low-grumble"></div></div>
+                    <span class="stat-num">12%</span>
+                </div>
+                <div class="progress-sim">
+                    <span class="data-label">РЕАКЦИЯ НА ТРОЙКИ:</span>
+                    <div class="bar-bg"><div class="bar-fill" style="width: 2%; background:#44ffaa;"></div></div>
+                    <span class="stat-num">☮️ 0% негатива</span>
+                </div>
+                <div style="margin-top: 12px;">
+                    <span style="color:#88ffdd;">[АКТИВНО: ПОДДЕРЖКА]</span><br>
+                    <span style="font-size: 0.75rem;">"Тройка? Это опыт. Идём дальше" — режим мудрости</span>
+                </div>
+            </div>
+            <div class="dream-code" style="background:#0b0f1c;">
+                <span style="color:#ff66cc;">>> Анализ способности</span><br>
+                ▸ Пассивный навык: "Сниженный уровень критики"<br>
+                ▸ Эмоциональная стабильность: 98%<br>
+                ▸ Реакция на оценки: спокойное обсуждение без наказаний.
+            </div>
+            <div class="data-row" style="border-left-color: cyan;">
+                <span class="data-label">▶ СУПЕР-ЦИТАТА:</span>
+                <span class="data-value" style="font-size: 0.95rem;">«Главное — интерес к учёбе, а не цифры»</span>
+            </div>
+            <div style="margin-top: 1rem; text-align:right; font-size:0.7rem; opacity:0.7;">
+                [ Модуль поддержки: АКТИВЕН ]
+            </div>
+        </div>
+    </div>
+
+    <!-- дополнительная секция: взаимодействие / кибер-логос без эмблем -->
+    <div class="neon-divider">
+        ◈ ◈ ◈  СИСТЕМА СЕМЕЙНОЙ ГАРМОНИИ  ◈ ◈ ◈
+    </div>
+    
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; background: rgba(0,10,20,0.5); padding: 1.5rem; border: 1px solid #0ff33f33; margin: 1rem 0;">
+        <div style="flex:1; min-width: 180px;">
+            <div class="data-label">🔹 СИНЕРГИЯ РОДИТЕЛЬ-РЕБЁНОК</div>
+            <div style="font-size:0.9rem;">▸ Слава создаёт безопасную среду для ошибок<br>▸ Максим растёт в атмосфере, где "тройка" — не приговор<br>▸ совместный код: доверие + свобода творить</div>
+        </div>
+        <div style="flex:1; min-width: 180px;">
+            <div class="data-label">🔹 БУДУЩАЯ ИГРА МАКСИМА</div>
+            <div style="font-size:0.9rem;">"RPG с открытым миром и необычными механиками. Посвящается всем, кто верит в начинающих разработчиков".</div>
+        </div>
+        <div style="flex:1; min-width: 150px;">
+            <div class="data-label">🔹 АТРИБУТЫ СУПЕРСИЛЫ</div>
+            <div style="font-size:0.85rem;">💡 терпение — 90%<br>💡 минимальный ворч-коэффициент<br>💡 антиругань-барьер max</div>
+        </div>
+    </div>
+
+    <!-- футер в киберстиле, никаких эмблем, только системная информация -->
+    <div class="footer-stats">
+        <div>[ СБОР ДАННЫХ: ДОСЬЕ MAXIM & SLAVA ]</div>
+        <div>[ ВЕРСИЯ ИНТЕРФЕЙСА: 5.26.2K ]</div>
+        <div>[ РЕЖИМ: КИБЕРПАНК-ЭТИКА | БЕЗ ЭМБЛЕМ ]</div>
+    </div>
+
+    <!-- небольшой декоративный сканер (чисто атмосфера) -->
+    <div style="height: 2px; background: linear-gradient(90deg, transparent, #0ff, #f0f, transparent); width: 100%; margin-top: 1.8rem;"></div>
+    <div style="text-align: center; font-size: 0.6rem; margin-top: 1rem; color: #0ff77d;">
+        // СЕМЕЙНЫЙ КИБЕР-ПРОЕКТ // РЕБЁНОК И РОДИТЕЛЬ В НОВОМ ИЗМЕРЕНИИ // НЕ РУГАЕМ ЗА ОЦЕНКИ, ЦЕНИМ МЕЧТЫ //
+    </div>
+</div>
+
+<!-- небольшой скрипт для динамического обновления времени/статуса (без эмблем, только текст) -->
+<script>
+    (function() {
+        // чисто косметическая функция: добавляет живые часы в стиле терминала, но без перегрузки
+        const footerDiv = document.querySelector('.footer-stats');
+        if (footerDiv) {
+            const timeSpan = document.createElement('div');
+            timeSpan.style.fontFamily = 'monospace';
+            timeSpan.style.opacity = '0.8';
+            const updateTime = () => {
+                const now = new Date();
+                const timeStr = now.toLocaleTimeString('ru-RU', { hour12: false });
+                timeSpan.innerHTML = `[ СИСТЕМНОЕ ВРЕМЯ: ${timeStr} MSK ]`;
+            };
+            updateTime();
+            setInterval(updateTime, 1000);
+            footerDiv.appendChild(timeSpan);
+        }
+        // добавим маленький эффект "наведения" на карточки, без вмешательства в структуру
+        const cards = document.querySelectorAll('.cyber-card');
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                // легкое свечение, чисто визуальный трюк
+                card.style.transition = 'all 0.12s';
+            });
+        });
+        console.log("CyberFamily online :: система поддержки родителя и ребенка активна");
+    })();
+</script>
+</body>
+</html>

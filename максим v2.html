@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>CS:GO | Операция: Семья — Максим & Слава</title>
+    <!-- Font Awesome 6 (иконки в стиле CS) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts: тактичные, геймерские шрифты -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* лёгкий киберспортивный эффект */
+        }
+
+        body {
+            background: radial-gradient(circle at 20% 30%, #0a0c12, #020304);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Текстура "CS:GO" — граффити / грязный металл */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" opacity="0.08"><path fill="none" d="M30 10 L70 40 L30 70 L10 45 L30 10Z" stroke="%23ff9900" stroke-width="1.2"/><circle cx="160" cy="40" r="12" stroke="%23ffaa33" stroke-width="1" fill="none"/><path d="M180 170 L150 140 L180 120 L195 145 L180 170Z" stroke="%23ff7700" stroke-width="1.2" fill="none"/><line x1="20" y1="180" x2="80" y2="130" stroke="%23888844" stroke-width="1" stroke-dasharray="3 3"/><text x="10" y="30" fill="%23ffa500" font-size="10" font-family="monospace">CS16</text></svg>');
+            background-repeat: repeat;
+            background-size: 95px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* главный контейнер */
+        .site-wrapper {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* HUD / верхняя панель в стиле CS:GO */
+        .hud-header {
+            background: rgba(10, 14, 23, 0.85);
+            backdrop-filter: blur(4px);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 140, 0, 0.5);
+            border-bottom: 3px solid #ff9900;
+            padding: 0.9rem 2rem;
+            margin-bottom: 3rem;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: baseline;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .cs-logo {
+            font-family: 'Orbitron', monospace;
+            font-weight: 800;
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, #ffb347, #ff7e05);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+            text-shadow: 0 0 6px rgba(255,100,0,0.5);
+        }
+
+        .op-title {
+            font-family: 'Orbitron', monospace;
+            font-weight: 500;
+            font-size: 1rem;
+            background: #1f232e;
+            padding: 5px 12px;
+            border-radius: 40px;
+            letter-spacing: 1px;
+            color: #ffcf8a;
+            border-left: 3px solid #ff9900;
+        }
+
+        .round-info {
+            font-family: monospace;
+            font-weight: bold;
+            background: #00000077;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            color: #bbbbaa;
+            letter-spacing: 1px;
+            border: 1px solid #ff990055;
+        }
+
+        .round-info i {
+            color: #ffaa33;
+            margin-right: 6px;
+        }
+
+        /* карточки игроков в стиле инвентаря / профиля */
+        .players-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* общий стиль карты CS:GO */
+        .player-card {
+            background: rgba(8, 12, 20, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 140, 0, 0.5);
+            box-shadow: 0 20px 35px -12px black, inset 0 1px 0 rgba(255,255,200,0.05);
+            transition: all 0.2s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .player-card:hover {
+            transform: translateY(-5px);
+            border-color: #ffaa33;
+            box-shadow: 0 25px 40px -12px #ff990040, 0 0 0 1px rgba(255, 140, 0, 0.3);
+        }
+
+        /* верхний градиент, как у оружия */
+        .card-accent {
+            height: 6px;
+            background: linear-gradient(90deg, #ff9900, #ffcc66, #ff9900);
+            width: 100%;
+        }
+
+        .card-content {
+            padding: 1.8rem 1.8rem 2rem;
+        }
+
+        .player-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid #ffaa3355;
+            padding-bottom: 0.6rem;
+        }
+
+        .player-name i {
+            font-size: 2.5rem;
+            color: #ffaa33;
+            text-shadow: 0 0 5px #ff9900;
+        }
+
+        .player-name h2 {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 1.9rem;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #ffffff, #ffcf9a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .badge-rank {
+            display: inline-block;
+            background: #1a1e2c;
+            border-radius: 20px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #ffaa66;
+            border: 1px solid #ffaa3344;
+            margin-bottom: 1.2rem;
+            letter-spacing: 1px;
+        }
+
+        .stat-block {
+            margin: 1.2rem 0;
+            background: rgba(0, 0, 0, 0.45);
+            border-radius: 20px;
+            padding: 0.8rem 1rem;
+            border-left: 4px solid #ff9900;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #ffcd94;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #f0f0f0;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .dream-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #ffe2b5;
+            word-break: break-word;
+        }
+
+        /* прогресс бары стили CS:GO */
+        .progress-bar {
+            background: #20232e;
+            border-radius: 14px;
+            height: 12px;
+            overflow: hidden;
+            margin: 12px 0 6px;
+            box-shadow: inset 0 1px 3px #00000066;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #ff9900, #ffc107);
+            width: 0%;
+            height: 100%;
+            border-radius: 14px;
+            box-shadow: 0 0 6px #ffa500;
+        }
+
+        .small-stats-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 18px;
+        }
+
+        .stat-pill {
+            background: #0f121cb3;
+            border-radius: 40px;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            backdrop-filter: blur(2px);
+            border: 1px solid #ffaa3344;
+            color: #ffd9a3;
+        }
+
+        .stat-pill i {
+            margin-right: 8px;
+            color: #ffaa33;
+        }
+
+        .superpower-highlight {
+            background: linear-gradient(145deg, #23282e, #0e1119);
+            border-radius: 28px;
+            padding: 1rem 1.2rem;
+            margin-top: 1rem;
+            border: 1px solid #ffaa3350;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+        }
+
+        .superpower-title {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #ffaa66;
+            letter-spacing: 2px;
+        }
+
+        .superpower-desc {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #ffdfb3;
+            margin-top: 5px;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 4rem;
+            font-size: 0.75rem;
+            font-family: monospace;
+            color: #aaa68c;
+            border-top: 1px dashed #ffaa3344;
+            padding-top: 1.8rem;
+            letter-spacing: 1px;
+        }
+
+        /* спец эффект "бомба" / радар */
+        .radar-dot {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #ff990022, transparent);
+            pointer-events: none;
+        }
+
+        /* респонсив */
+        @media (max-width: 780px) {
+            body {
+                padding: 1rem;
+            }
+            .player-name h2 {
+                font-size: 1.5rem;
+            }
+            .card-content {
+                padding: 1.2rem;
+            }
+            .hud-header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+        }
+
+        /* анимация для улучшения восприятия */
+        @keyframes pulse-glow {
+            0% { text-shadow: 0 0 0px #ff9900; }
+            100% { text-shadow: 0 0 5px #ffaa33; }
+        }
+
+        .stat-value i {
+            margin-right: 8px;
+            color: #ffaa33;
+        }
+    </style>
+</head>
+<body>
+<div class="site-wrapper">
+    <!-- Верхняя панель в духе CS:GO -->
+    <div class="hud-header">
+        <div class="logo-area">
+            <span class="cs-logo"><i class="fas fa-crosshairs"></i> CS:GO</span>
+            <div class="op-title">ОПЕРАЦИЯ «СЕМЕЙНЫЙ КОНТРАКТ»</div>
+        </div>
+        <div class="round-info">
+            <i class="fas fa-clock"></i> ROUND: LOVE & SUPPORT &nbsp;&nbsp;|&nbsp;&nbsp; <i class="fas fa-users"></i> 2/2 ACTIVE
+        </div>
+    </div>
+
+    <!-- ГЛАВНЫЕ КАРТОЧКИ: РЕБЁНОК И РОДИТЕЛЬ -->
+    <div class="players-grid">
+        
+        <!-- КАРТОЧКА МАКСИМА (РЕБЁНОК) -->
+        <div class="player-card">
+            <div class="card-accent"></div>
+            <div class="card-content">
+                <div class="player-name">
+                    <i class="fas fa-laptop-code"></i>
+                    <h2>МАКСИМ</h2>
+                </div>
+                <div class="badge-rank">
+                    <i class="fas fa-tag"></i> РАЗРАБОТЧИК · УРОВЕНЬ 11
+                </div>
+                
+                <div class="stat-block">
+                    <div class="stat-label"><i class="fas fa-birthday-cake"></i> ВОЗРАСТ</div>
+                    <div class="stat-value">11 лет</div>
+                </div>
+
+                <div class="stat-block">
+                    <div class="stat-label"><i class="fas fa-gamepad"></i> МЕЧТА</div>
+                    <div class="stat-value dream-text">
+                        <i class="fas fa-code"></i> Стать разработчиком ХОРОШЕЙ игры
+                    </div>
+                </div>
+
+                <!-- Прогресс развития мечты (декоративный) -->
+                <div class="stat-label" style="margin-top: 5px;"><i class="fas fa-chart-line"></i> PROGRESS TO DREAM</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 44%;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.7rem; color:#ffbe76;"><span>⚡ Изучает C# / Unity</span><span>44% знаний</span></div>
+
+                <div class="small-stats-grid">
+                    <div class="stat-pill"><i class="fas fa-brain"></i> Логика: 87%</div>
+                    <div class="stat-pill"><i class="fas fa-paintbrush"></i> Креативность: 92%</div>
+                    <div class="stat-pill"><i class="fas fa-cubes"></i> Level design: 68%</div>
+                </div>
+
+                <div class="superpower-highlight" style="margin-top: 20px; background: #0e121dad;">
+                    <div class="superpower-title"><i class="fas fa-bullseye"></i> ЛИЧНАЯ СПОСОБНОСТЬ</div>
+                    <div class="superpower-desc">🔥 «Код-энтузиазм» — даже 3 по информатике не снижают интерес к геймдеву 🔥</div>
+                </div>
+                <div class="radar-dot"></div>
+            </div>
+        </div>
+
+        <!-- КАРТОЧКА СЛАВЫ (РОДИТЕЛЬ) С СУПЕРСПОСОБНОСТЬЮ -->
+        <div class="player-card">
+            <div class="card-accent"></div>
+            <div class="card-content">
+                <div class="player-name">
+                    <i class="fas fa-shield-alt"></i>
+                    <h2>СЛАВА</h2>
+                </div>
+                <div class="badge-rank">
+                    <i class="fas fa-star-of-life"></i> РОДИТЕЛЬ · ГЛОБАЛЬНЫЙ ЭЛИТ
+                </div>
+
+                <div class="stat-block">
+                    <div class="stat-label"><i class="fas fa-dice-d6"></i> СУПЕРСПОСОБНОСТЬ (ПАССИВНАЯ)</div>
+                    <div class="stat-value dream-text" style="font-size:1.25rem;">
+                        <i class="fas fa-hand-peace"></i> Мало ворчит и не ругает за тройки
+                    </div>
+                </div>
+
+                <!-- График частоты ворчания - стиль CS:GO -->
+                <div class="stat-label"><i class="fas fa-waveform"></i> ГРАФИК ВОРЧАНИЯ (ЧАСТОТА)</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 22%; background: linear-gradient(90deg,#4caf50, #ffcc66);"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size:0.7rem;"><span>🔇 РЕДКО (22%)</span><span>Обычный родитель 78%</span></div>
+
+                <div class="stat-label" style="margin-top: 12px;"><i class="fas fa-ban"></i> РЕАКЦИЯ НА ТРОЙКИ В ШКОЛЕ</div>
+                <div class="small-stats-grid" style="justify-content: flex-start;">
+                    <div class="stat-pill"><i class="fas fa-smile-wink"></i> Без криков</div>
+                    <div class="stat-pill"><i class="fas fa-chalkboard-user"></i> Разбор полётов</div>
+                    <div class="stat-pill"><i class="fas fa-heart"></i> Поддержка</div>
+                </div>
+
+                <!-- Дополнительная статистика как в профилях CS -->
+                <div class="superpower-highlight">
+                    <div class="superpower-title"><i class="fas fa-trophy"></i> ДОСТИЖЕНИЕ «ДЖЕНТЛЬМЕН-ПАРЕНТ»</div>
+                    <div class="superpower-desc">
+                        <i class="fas fa-comment-dots"></i> "Сын, три — не приговор, давай разберём тему вместе"
+                    </div>
+                    <div style="margin-top: 12px; display: flex; gap: 12px; flex-wrap: wrap;">
+                        <span class="stat-pill"><i class="fas fa-chart-simple"></i> Уровень стресса: 18%</span>
+                        <span class="stat-pill"><i class="fas fa-face-grin-tongue-squint"></i> Чувство юмора: 95%</span>
+                    </div>
+                </div>
+
+                <!-- аура терпения -->
+                <div class="stat-block" style="margin-top: 0.5rem;">
+                    <div class="stat-label"><i class="fas fa-meteor"></i> ЭФФЕКТ АУРЫ</div>
+                    <div class="stat-value"><i class="fas fa-charging-station"></i> +50% к мотивации Максима</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Дополнительный игровой блок: показатели команды -->
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; margin-top: 1rem;">
+        <div style="background: #0b0e16aa; backdrop-filter: blur(8px); border-radius: 40px; padding: 10px 25px; border: 1px solid #ff990055; display: inline-flex; gap: 20px; flex-wrap: wrap;">
+            <div><i class="fas fa-hands-helping" style="color:#ffaa33"></i> <strong style="color:#ffe0b5;">Синергия:</strong> Слава не повышает голос → Максим спокойно учит код</div>
+            <div><i class="fas fa-chalkboard"></i> <strong style="color:#ffe0b5;">Текущая миссия:</strong> Создать демо-версию игры к НГ</div>
+            <div><i class="fas fa-school"></i> <strong style="color:#ffe0b5;">Оценки:</strong> Тройки — это опыт, не ошибка</div>
+        </div>
+    </div>
+
+    <!-- Дополнительная информация в стиле "оружие семьи" -->
+    <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 2rem; flex-wrap: wrap;">
+        <div style="background:#03050be0; border-radius: 48px; padding: 8px 22px; border-left: 5px solid #ffaa33;">
+            <i class="fas fa-terminal"></i> <span style="font-family: monospace;">>> Максим: "Я научусь делать свои игры, и папа будет моим главным тестером!"</span>
+        </div>
+        <div style="background:#03050be0; border-radius: 48px; padding: 8px 22px; border-right: 5px solid #ffaa33;">
+            <i class="fas fa-heart"></i> <span style="font-family: monospace;">>> Слава: "Мечта сына важнее школьных ярлыков. Вперед, разрабатывай!"</span>
+        </div>
+    </div>
+
+    <!-- Таблица "статистика" в стиле клановых достижений -->
+    <div style="margin-top: 3rem; background: rgba(0,0,0,0.45); border-radius: 28px; padding: 1.5rem; border: 1px solid #ffaa3355;">
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: space-between; align-items: center;">
+            <div><i class="fas fa-ranking-star" style="color:#ffaa33"></i> <span style="font-weight: bold; color:#ffdd99;">Рейтинг семьи:</span> <span style="color:white;">Legendary Eagle Master</span></div>
+            <div><i class="fas fa-medal"></i> <span style="font-weight: bold; color:#ffdd99;">Достижение родителя:</span> <span style="color:white;">"Хладнокровие" — не срывается на тройках</span></div>
+            <div><i class="fas fa-gamepad"></i> <span style="font-weight: bold; color:#ffdd99;">Будущий хит от Максима:</span> <span style="color:white;">"Детство героя" (RPG в разработке)</span></div>
+        </div>
+    </div>
+
+    <!-- маленький индикатор как радар csgo -->
+    <div class="footer-note">
+        <i class="fas fa-dice-d6"></i> "Хорошая игра рождается из поддержки"  |  COUNTER-STRIKE: FAMILY OPERATION  |  <i class="fas fa-volume-up"></i> НАГРАДА ЗА ЛУЧШЕГО РОДИТЕЛЯ
+    </div>
+</div>
+
+<!-- лёгкий эффект курсора (доп. атмосфера) -->
+<script>
+    // кастомный курсор не обязателен, но добавим небольшую динамику на прогресс-бары с загрузкой? 
+    // Анимируем при загрузке полоски прогресса для красоты
+    document.addEventListener("DOMContentLoaded", () => {
+        const fillBars = document.querySelectorAll(".progress-fill");
+        fillBars.forEach(bar => {
+            const width = bar.style.width;
+            if (width) {
+                bar.style.width = "0%";
+                setTimeout(() => {
+                    bar.style.width = width;
+                    bar.style.transition = "width 1.2s cubic-bezier(0.2, 0.9, 0.4, 1.1)";
+                }, 200);
+            }
+        });
+        // маленькая подпись в консоль (cs стиль)
+        console.log("%c[CS:GO FAMILY] МАКСИМ и СЛАВА — лучшая команда! Нетоксичный родитель — имба способность.", "color: #ffaa33; font-size: 12px; font-family: monospace;");
+    });
+</script>
+</body>
+</html>
